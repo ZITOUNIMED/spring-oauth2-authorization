@@ -1,0 +1,33 @@
+server:
+  port: 8090
+
+authorization-server:
+  url: ${AUTHORIZATION_SERVER:http://auth-server:9000}
+  
+spring:
+  application:
+    name: resource-server
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${authorization-server.url}
+          
+eureka:
+  client:
+    instance:
+      preferIpAddress: true
+    serviceUrl:
+      defaultZone: ${EUREKA_SERVER:http://localhost:8761/eureka}
+logging:
+  level:
+    root: INFO
+    org.springframework.web: INFO
+    org.springframework.security: INFO
+    org.springframework.security.oauth2: INFO
+  
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"

@@ -1,0 +1,3 @@
+com\baeldung\config\AuthorizationServerConfig.class
+com\baeldung\config\DefaultSecurityConfig.class
+com\baeldung\OAuth2AuthorizationServerApplication.class

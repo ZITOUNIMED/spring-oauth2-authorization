@@ -1,0 +1,70 @@
+version: "3.8"
+
+services:
+    discovery-service:
+        image: discovery-service
+        ports:
+            - "8761:8761"
+        healthcheck:
+          test: ["CMD", "curl", "-f", "http://discovery-service:8761"]
+          interval: 5s
+          timeout: 3s
+          retries: 7
+    gateway-service:
+        image: gateway-service
+        ports: 
+            - "8080:8080"
+        depends_on:
+            - discovery-service
+        restart: on-failure
+        environment:
+            EUREKA_SERVER: http://discovery-service:8761/eureka
+    authorization-server:
+        image: authorization-server
+        ports: 
+            - "9000:9000"
+        depends_on:
+            - discovery-service
+            - gateway-service
+        restart: on-failure
+        environment:
+            EUREKA_SERVER: http://discovery-service:8761/eureka
+            AUTHORIZATION_SERVER: http://auth-server:9000
+            CLIENT_SERVER: http://gateway:8080/client-server
+    resource-server:
+        image: resource-server
+        ports: 
+            - "8090:8090"
+        depends_on:
+            - discovery-service
+            - gateway-service
+            - authorization-server
+        restart: on-failure
+        environment:
+            EUREKA_SERVER: http://discovery-service:8761/eureka
+            AUTHORIZATION_SERVER: http://auth-server:9000
+    client-server:
+        image: client-server
+        ports: 
+            - "8081:8081"
+        depends_on:
+            - discovery-service
+            - gateway-service
+            - authorization-server
+            - resource-server
+        restart: on-failure
+        environment:
+            EUREKA_SERVER: http://discovery-service:8761/eureka
+            RESOURCE_SERVER: http://gateway:8080/resource-server
+            AUTHORIZATION_SERVER: http://auth-server:9000
+            CLIENT_SERVER: http://gateway:8080/client-server
+    message-service:
+        image: message-service
+        ports: 
+            - "8091:8091"
+        depends_on:
+            - discovery-service
+            - gateway-service
+        restart: on-failure
+        environment:
+            EUREKA_SERVER: http://discovery-service:8761/eureka

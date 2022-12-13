@@ -1,0 +1,58 @@
+server:
+  port: 8081
+
+resource-server:
+  url: ${RESOURCE_SERVER:http://127.0.0.1:8090}
+
+authorization-server:
+  url: ${AUTHORIZATION_SERVER:http://auth-server:9000}
+  
+client-server:
+  url: ${CLIENT_SERVER:http://127.0.0.1:8081}
+
+
+spring:
+  application:
+    name: client-server
+  security:
+    oauth2:
+      client:
+        registration:
+          articles-client-oidc:
+            provider: spring
+            client-id: articles-client
+            client-secret: secret
+            authorization-grant-type: authorization_code
+            redirect-uri: "${client-server.url}/login/oauth2/code/{registrationId}"
+            scope: openid
+            client-name: articles-client-oidc
+          articles-client-authorization-code:
+            provider: spring
+            client-id: articles-client
+            client-secret: secret
+            authorization-grant-type: authorization_code
+            redirect-uri: "${client-server.url}/authorized"
+            client-name: articles-client-authorization-code
+        provider:
+          spring:
+            issuer-uri: ${authorization-server.url}
+            
+eureka:
+  client:
+    instance:
+      preferIpAddress: true
+    serviceUrl:
+      defaultZone: ${EUREKA_SERVER:http://localhost:8761/eureka}
+
+logging:
+  level:
+    root: INFO
+    org.springframework.web: INFO
+    org.springframework.security: INFO
+    org.springframework.security.oauth2: INFO
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"

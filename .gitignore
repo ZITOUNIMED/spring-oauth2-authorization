@@ -1,0 +1,7 @@
+.metadata
+resource-server/target
+client-server/target
+messages-service/target
+discovery-servive/target
+gateway-service/target
+authorization-server/target

@@ -1,0 +1,4 @@
+com\baeldung\config\WebClientConfig.class
+com\baeldung\web\ArticlesController.class
+com\baeldung\config\SecurityConfig.class
+com\baeldung\OAuth2ClientApplication.class
